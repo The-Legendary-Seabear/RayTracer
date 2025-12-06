@@ -19,6 +19,7 @@ void Scene::Render(Framebuffer& framebuffer, const Camera& camera) {
 			ray_t ray = camera.GetRay(point);
 			// trace ray
 			raycastHit_t raycastHit;
+			
 			// 0 = min ray distance, 100 = max ray distance
 			color3_t color = Trace(ray, 0, 100, raycastHit);
 
@@ -27,8 +28,9 @@ void Scene::Render(Framebuffer& framebuffer, const Camera& camera) {
 	}
 }
 
-void Scene::AddObject() {
+void Scene::AddObject(std::unique_ptr<class Object> object) {
 	// add object to objects vector
+	objects.push_back(std::move(object));
 	
 }
 
@@ -36,8 +38,8 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 
 	bool rayHit = false;
 	float closestDistance = maxDistance;
+	//raycastHit_t raycastHit;
 
-	/*
 	
 	// check if scene objects are hit by the ray
 	for (auto& object : objects) {
@@ -48,7 +50,7 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 			closestDistance = raycastHit.distance;// raycast hit distance;
 		}
 	}
-	*/
+	
 	// check if ray hit object
 	if (rayHit)	{
 		// get material color of hit object
