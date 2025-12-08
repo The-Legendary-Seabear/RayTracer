@@ -26,7 +26,7 @@ bool Sphere::Hit(const ray_t & ray, float minDistance, float maxDistance,
 					raycastHit.distance = t;// t is the distance
 					raycastHit.point = ray.at(t);// use ray at(t)
 						raycastHit.normal = (raycastHit.point - position) / radius;
-					raycastHit.color = color;
+					//raycastHit.color = color;
 					return true;
 				}
 			// if the nearest root wasn't valid, check the second one: t = (-b +
@@ -37,7 +37,7 @@ bool Sphere::Hit(const ray_t & ray, float minDistance, float maxDistance,
 					raycastHit.distance = t;// t is the distance
 					raycastHit.point = ray.at(t);// use ray at(t)
 						raycastHit.normal = (raycastHit.point - position) / radius;
-					raycastHit.color = color;
+					//raycastHit.color = color;
 					return true;
 				}
 		}
