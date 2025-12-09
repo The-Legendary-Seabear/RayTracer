@@ -1,5 +1,5 @@
 #pragma once
-#include <memory.h>
+#include <memory>
 #include "Color.h"
 #include "Ray.h"
 #include "Transform.h"

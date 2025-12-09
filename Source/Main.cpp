@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Sphere.h"
 #include "Random.h"
+#include "Material.h"
 
 #include <iostream>
 
@@ -22,31 +23,35 @@ int main() {
 
 	float aspectRatio = (float)framebuffer.width / framebuffer.height;//framebuffer width divided by framebuffer height (float division)
 		Camera camera(70.0f, aspectRatio);
-		camera.SetView({ 0, 0, 5 }, { 0, 0, 0 });
+		camera.SetView({ 0, 2, 5 }, { 0, 0, 0 });
 
 		Scene scene;
 		//<unique pointer of Object or auto> sphere = <make unique pointer of Sphere>(glm::vec3{ 0, 0, 0 }, 2.0f, color3_t{ 1, 0, 0 });
 		//scene.AddObject(<add the sphere into the scene, remember to move ownership>);
-		auto sphere1 = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, 1.0f, color3_t{ 1, 0, 0 });
-		scene.AddObject(std::move(sphere1));
+		 
+		//auto sphere1 = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, 1.0f, color3_t{ 1, 0, 0 });
+		//scene.AddObject(std::move(sphere1));
 
+		/*
+		
 		for (int i = 0; i < 5; i++) {
 			glm::vec3 position = random::getReal(glm::vec3{ -3.0f }, glm::vec3{ 3.0f });
 			auto sphere = std::make_unique<Sphere>(position, 1.0f, color3_t{ 1, 0, 0 });
 			scene.AddObject(std::move(sphere)); //<add the sphere into the scene, remember to move ownership>
 		}
+		*/
 
 		auto red = std::make_shared<Lambertian>(color3_t{ 1.0f, 0.0f, 0.0f });
 		auto green = std::make_shared<Lambertian>(color3_t{ 0.0f, 1.0f, 0.0f });
 		auto blue = std::make_shared<Lambertian>(color3_t{ 0.0f, 0.0f, 1.0f });
 		auto light = std::make_shared<Emissive>(color3_t{ 1.0f, 1.0f, 1.0f }, 3.0f);
 		auto metal = std::make_shared<Metal>(color3_t{ 1.0f, 1.0f, 1.0f }, 0.0f);
-		std::vector<std::shared_ptr<Material>> materials = {red, green, blue, light, metal};
+		std::shared_ptr<Material> materials[] = {red, green, blue, light, metal};
 
 		for (int i = 0; i < 15; i++) {
 			glm::vec3 position = random::getReal(glm::vec3{ -3.0f }, glm::vec3{ 3.0f });
 
-			std::unique_ptr<Object> sphere = std::make_unique<Sphere>(Transform{ position }, random::getReal(0.2f, 1.0f), materials[random::getInt(0, (int)materials.size() - 1)]);
+			std::unique_ptr<Object> sphere = std::make_unique<Sphere>(Transform{ position }, random::getReal(0.2f, 1.0f), materials[random::getInt(0, 4)]);
 			scene.AddObject(std::move(sphere));
 		}
 
@@ -67,7 +72,7 @@ int main() {
 
 		// draw to frame buffer
 		framebuffer.Clear({ 0, 0, 0, 255 });
-		scene.Render(framebuffer, camera, 50);
+		scene.Render(framebuffer, camera, 10);
 
 		// update frame buffer, copy buffer pixels to texture
 		framebuffer.Update();

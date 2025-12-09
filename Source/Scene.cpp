@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Color.h"
 #include "Random.h"
+#include "Material.h"
 #include <iostream>
 
 void Scene::Render(Framebuffer& framebuffer, const Camera& camera, int numSamples) {
@@ -19,7 +20,7 @@ void Scene::Render(Framebuffer& framebuffer, const Camera& camera, int numSample
 			// get ray from camera
 				ray_t ray = camera.GetRay(point);// call GetRay() from camera
 				// trace ray
-				color3_t color = Trace(ray, 0.001f, 1000.0f, maxDepth);// class Trace with ray;
+				color3_t color = Trace(ray, 0.0001f, 100.0f, 20);// class Trace with ray;
 
 				// draw pixel (x,y) to frame buffer using color (make sure to convert color)
 				SDL_Color sdlColor;
@@ -27,6 +28,8 @@ void Scene::Render(Framebuffer& framebuffer, const Camera& camera, int numSample
 				sdlColor.g = (Uint8)(glm::clamp(color.g, 0.0f, 1.0f) * 255);
 				sdlColor.b = (Uint8)(glm::clamp(color.b, 0.0f, 1.0f) * 255);
 				sdlColor.a = 255;
+
+				//color /= (float(numSamples));
 
 				framebuffer.DrawPoint(x, y, sdlColor);
 		}
@@ -58,6 +61,7 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, in
 			rayHit = true;
 			// set closest distance to the raycast hit distance (only hit objects closer than closest distance)
 			closestDistance = raycastHit.distance;// raycast hit distance;
+		}
 	}
 
 	// check if ray hit object

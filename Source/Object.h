@@ -17,7 +17,6 @@ public:
 	virtual bool Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit) = 0;
 
 protected:
-	color3_t color;
 	Transform transform;
 	std::shared_ptr<class Material> material;
 };
