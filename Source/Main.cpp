@@ -74,6 +74,7 @@ int main() {
     SDL_Event event;
     bool quit = false;
 
+
     while (!quit) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) quit = true;
@@ -82,7 +83,7 @@ int main() {
         }
 
         framebuffer.Clear({ 0, 0, 0, 255 });
-        scene.Render(framebuffer, camera, 10);
+        scene.Render(framebuffer, camera, 150);
         framebuffer.Update();
 
         renderer.CopyFramebuffer(framebuffer);

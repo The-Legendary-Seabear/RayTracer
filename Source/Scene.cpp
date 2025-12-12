@@ -10,29 +10,28 @@ void Scene::Render(Framebuffer& framebuffer, const Camera& camera, int numSample
 	// trace ray for every framebuffer pixel
 	for (int y = 0; y < framebuffer.height; y++) {
 		for (int x = 0; x < framebuffer.width; x++) {
-			// set pixel (x,y) coordinates)
-			glm::vec2 pixel = {(float)x , (float)y};// set pixel x and y
+
+			color3_t color{ 0 };
+			// multi-sample for each pixel
+			for (int i = 0; i < numSamples; i++) {
+				// set pixel (x,y) coordinates)
+				glm::vec2 pixel = { (float)x , (float)y };// set pixel x and y
 				// normalize (0 <-> 1) the pixel value (pixel / { framebuffer.width, framebuffer.height }
-			glm::vec2 point = pixel / glm::vec2{ framebuffer.width, framebuffer.height };
+				glm::vec2 point = pixel / glm::vec2{ framebuffer.width, framebuffer.height };
 				// flip the y value (bottom = 0, top = 1)
 				point.y = 1 - point.y;
 
-			// get ray from camera
+				// get ray from camera
 				ray_t ray = camera.GetRay(point);// call GetRay() from camera
 				// trace ray
-				color3_t color = Trace(ray, 0.0001f, 100.0f, 20);// class Trace with ray;
+				color += Trace(ray, 0.0001f, 100.0f, 5);// class Trace with ray;
 
+			}
 				// draw pixel (x,y) to frame buffer using color (make sure to convert color)
-				SDL_Color sdlColor;
-				sdlColor.r = (Uint8)(glm::clamp(color.r, 0.0f, 1.0f) * 255);
-				sdlColor.g = (Uint8)(glm::clamp(color.g, 0.0f, 1.0f) * 255);
-				sdlColor.b = (Uint8)(glm::clamp(color.b, 0.0f, 1.0f) * 255);
-				sdlColor.a = 255;
-
-				//color /= (float(numSamples));
-
-				framebuffer.DrawPoint(x, y, sdlColor);
+				color /= (float(numSamples));
+				framebuffer.DrawPoint(x, y, ColorConvert(color));
 		}
+		std::cout << y << std::endl; // out y position
 	}
 }
 
@@ -46,7 +45,6 @@ void Scene::AddObject(std::unique_ptr<class Object> object) {
 
 
 color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, int maxDepth) {
-
 	// reached max depth (bounce) return black color
 	if (maxDepth == 0) return color3_t{ 0, 0, 0 };
 
